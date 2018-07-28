@@ -13,22 +13,15 @@ services:
       - POSTGRES_PASSWORD=taiga_password
       - POSTGRES_DB=taiga
 
-    # uncomment the following to enable backup
-    #  - AWS_ACCESS_KEY_ID=XXXX
-    #  - AWS_SECRET_ACCESS_KEY=XXXX
-    #  - WALE_S3_PREFIX=s3://BUCKET_NAME/PATH
-    #  - AWS_REGION=us-east-1
-
   taiga-back:
     restart: unless-stopped
     build: back
-    ports:
-      - 8001:8001
     volumes:
       - static_data:/taiga-back/static
       - ./back/local.py:/taiga-back/settings/local.py
+      - /etc/localtime:/etc/localtime:ro
 
-  web:
+  taiga-front:
     build: web
     restart: unless-stopped
     read_only: true
@@ -39,10 +32,6 @@ services:
       - media_data:/taiga-front-dist/media
       - ./web/conf.json:/taiga-front-dist/dist/conf.json
       - /etc/localtime:/etc/localtime:ro
-
-    # Uncomment for SSL
-    # environment:
-    #  - MATTERMOST_ENABLE_SSL=true
 
 volumes:
   db_data:
