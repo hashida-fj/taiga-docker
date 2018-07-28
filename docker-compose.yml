@@ -14,15 +14,15 @@ services:
       - POSTGRES_DB=taiga
 
   taiga-back:
+    build: taiga-back
     restart: unless-stopped
-    build: back
     volumes:
       - static_data:/taiga-back/static
-      - ./back/local.py:/taiga-back/settings/local.py
+      - ./taiga-back/local.py:/taiga-back/settings/local.py
       - /etc/localtime:/etc/localtime:ro
 
   taiga-front:
-    build: web
+    build: taiga-front
     restart: unless-stopped
     read_only: true
     ports:
@@ -30,7 +30,7 @@ services:
     volumes:
       - static_data:/taiga-front-dist/static:ro
       - media_data:/taiga-front-dist/media
-      - ./web/conf.json:/taiga-front-dist/dist/conf.json
+      - ./taiga-front/conf.json:/taiga-front-dist/dist/conf.json
       - /etc/localtime:/etc/localtime:ro
 
 volumes:
