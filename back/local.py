@@ -39,6 +39,9 @@ DATABASES = {
     }
 }
 
+CELERY_ENABLED = False
+WEBHOOKS_ENABLED = True
+
 #SITES = {
 #    "api": {
 #       "scheme": "http",
@@ -52,6 +55,8 @@ DATABASES = {
 #    },
 #}
 
+SITES["front"]["scheme"] = "http"
+SITES["front"]["domain"] = "localhost:8089"
 #SITE_ID = "api"
 
 #MEDIA_ROOT = '/home/taiga/media'
@@ -111,7 +116,7 @@ DATABASES = {
 ## REGISTRATION
 #########################################
 
-#PUBLIC_REGISTER_ENABLED = True
+PUBLIC_REGISTER_ENABLED = True
 
 # LIMIT ALLOWED DOMAINS FOR REGISTER AND INVITE
 # None or [] values in USER_EMAIL_ALLOWED_DOMAINS means allow any domain

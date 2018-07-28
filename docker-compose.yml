@@ -1,4 +1,4 @@
-version: "2"
+version: "3.3"
 
 services:
 
@@ -6,12 +6,13 @@ services:
     image: postgres:9.4-alpine
     restart: unless-stopped
     volumes:
-      - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_USER=taiga
       - POSTGRES_PASSWORD=taiga_password
       - POSTGRES_DB=taiga
+
     # uncomment the following to enable backup
     #  - AWS_ACCESS_KEY_ID=XXXX
     #  - AWS_SECRET_ACCESS_KEY=XXXX
@@ -19,20 +20,31 @@ services:
     #  - AWS_REGION=us-east-1
 
   taiga-back:
+    restart: unless-stopped
     build: back
+    ports:
+      - 8001:8001
     volumes:
+      - static_data:/taiga-back/static
       - ./back/local.py:/taiga-back/settings/local.py
 
-##  web:
-##    build: web
-##    ports:
-##      - "8089:80"
-##      - "443:443"
-##    read_only: true
-##    restart: unless-stopped
-##    volumes:
-##      # This directory must have cert files if you want to enable SSL
-##      - /etc/localtime:/etc/localtime:ro
+  web:
+    build: web
+    restart: unless-stopped
+    read_only: true
+    ports:
+      - "8089:80"
+    volumes:
+      - static_data:/taiga-front-dist/static:ro
+      - media_data:/taiga-front-dist/media
+      - ./web/conf.json:/taiga-front-dist/dist/conf.json
+      - /etc/localtime:/etc/localtime:ro
+
     # Uncomment for SSL
     # environment:
     #  - MATTERMOST_ENABLE_SSL=true
+
+volumes:
+  db_data:
+  static_data:
+  media_data:
